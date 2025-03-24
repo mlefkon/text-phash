@@ -1,7 +1,7 @@
 # TextPHash
 ### Perceptual Hash for text strings.
 
-Source repository [Github: mlefkon/XXXXXXX](https://github.com/mlefkon/XXXXXXX)
+Source repository [Github: mlefkon/text-phash](https://github.com/mlefkon/text-phash.git)
 
 ---
 
@@ -12,18 +12,18 @@ Source repository [Github: mlefkon/XXXXXXX](https://github.com/mlefkon/XXXXXXX)
 
 ## Usage
 
-**Node (CJS)**
+    const TextPHash = require('TextPHash')
+    // OR
+    import TextPHash from 'TextPHash'
 
-    const TextPHash = require('./TextPHash.js')
-
-
-**Browser (ES)**
-
-    import TextPHash from './TextPHash.js'
+    let hashA = TextPHash.computePHash("The quick brown fox jumped over the black fence.")
+    let hashB = TextPHash.computePHash("Over the black fence, the quick brown fox jumped.")
+    let pctMatch = TextPHash.percentMatch(hashA, hashB)
+    console.log(pctMatch);  // 77%
 
 ## Methodology
 1.  Supply text (can be one word or a lengthy book)
-2.  Tokenize text into groups of NGRAM_WORDS neighboring words (n-grams). 
+2.  Tokenize text into neighboring groups of NGRAM_WORDS number of words (n-grams). 
 3.  Initialize `[hashHits]` array with (2 ^ WORD_HASH_BIT_SIZE) zeros, one 'counter' for each possible hash value. 
 4.  Use {WORD_HASH_FUNCTION} to hash each n-gram into {WORD_HASH_BIT_SIZE} bits.
 5.  Increment that hash's 'counter' in the `[hashHits]` array

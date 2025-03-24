@@ -1,8 +1,7 @@
-# Node.js specific
+package-lock.json
 node_modules/
 .npm/
 .npmrc
-package-lock.json
 
 
 
