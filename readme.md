@@ -12,9 +12,9 @@ Source repository [Github: mlefkon/text-phash](https://github.com/mlefkon/text-p
 
 ## Usage
 
-    const TextPHash = require('TextPHash')
+    const TextPHash = require('text-phash')
     // OR
-    import TextPHash from 'TextPHash'
+    import TextPHash from 'text-phash'
 
     let hashA = TextPHash.computePHash("The quick brown fox jumped over the black fence.")
     let hashB = TextPHash.computePHash("Over the black fence, the quick brown fox jumped.")
