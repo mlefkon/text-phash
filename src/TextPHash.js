@@ -1,18 +1,3 @@
-/* Methodology:
-    - Supply text (can be one word or a lengthy book)
-    - Tokenize text into groups of neighboring words (n-grams)
-    - Initialize 'hashHits' array with zeros, one element for each possible word-hash value. eg. 8 bit hash yields 256 possible values (2 ** WORD_HASH_BIT_SIZE).
-    - Word-Hash each n-gram into {WORD_HASH_BIT_SIZE} bits
-    - Increment the corresponding index 'hit counter' in the 'hashHits' array
-    - Normalize the hashHits 'counter' values to between 0 (no hits) and 2^HIT_VALUE_BITS-1 (max hits). Eg. 2 bits => max hits gets value of 3.
-    - Convert each hashHits hit value to a binary string
-    - Concat all binary strings together 
-    - Group each 8 bits and convert into a hexadecimal string
-    - Compare two hashes by converting back into binary and subtracting hit values from each other (don't do bitwise XOR cuz 10 vs 01 should be diff of 1, not 0)
-        The percent match is this difference divided by the 'unioned' area under the two histograms.
-*/
-
-
 class TextPHash {
 
     static DefaultOptions = {   // These are recommended, but can be changed:
@@ -28,33 +13,48 @@ class TextPHash {
 
 
     static computePHash(text, options) {
+        // Supply text (can be one word or a lengthy book)
         options = { ...TextPHash.DefaultOptions, options }
-        let hashHits = new Array(2 ** options.WORD_HASH_BIT_SIZE).fill(0); // array of hit counters for each possible hash value
+        // Initialize [hashHits] array with zeros, one element for each possible word-hash value. 
+        //   eg. 8 bit hash yields 256 possible values (2 ** WORD_HASH_BIT_SIZE).
+        let hashHits = new Array(2 ** options.WORD_HASH_BIT_SIZE).fill(0);
 
         if (text === null)
             throw new Error('Text is null')
+        // Get array of alpha-char words/numbers, individual CJK chars
         let words = text
             .toUpperCase()
-            .match(/\b[\p{L}\p{Mn}\p{Pd}'’`0-9]+\b|\p{L}/gu) // array of alpha-char words/numbers, individual CJK chars
+            .match(/\b[\p{L}\p{Mn}\p{Pd}'’`0-9]+\b|\p{L}/gu)
+        // Tokenize text into groups of neighboring words (n-grams)
         if (words !== null && words.length > 0) { // don't do for blank document or contain only non-word items, like images.
             let grams = TextPHash.#nGrams(words, options.NGRAM_WORDS)
             grams.forEach(gram => {
-                let wordHash = options.WORD_HASH_FUNCTION(gram, options.WORD_HASH_BIT_SIZE); // hash each n-gram
-                hashHits[wordHash]++ // and register a 'hit' for each hash encountered
+                // hash each n-gram into {WORD_HASH_BIT_SIZE} bits
+                let wordHash = options.WORD_HASH_FUNCTION(gram, options.WORD_HASH_BIT_SIZE); 
+                // and register a 'hit' in [hashHits] for each hash encountered
+                hashHits[wordHash]++ 
             });
         }
-        // Normalize hit values & convert to hex string
-        const NORMALIZED_MAX = 2 ** options.HIT_VALUE_BITS - 1  // the max value that we can save is based on how many bits we have available (= 2 ^ bits)
-        let maxHits = hashHits.reduce((a, c) => c > a ? c : a, 0)
+
+        // Normalize the hashHits counters to between 0 (no hits) and 2^HIT_VALUE_BITS-1 (max hits). 
+        //   Eg. 2 bits => max hits gets value of 3.
+        const NORMALIZED_MAX = 2 ** options.HIT_VALUE_BITS - 1  // the max value saved to PHash is based on how many bits we have available.
+        let maxHits = hashHits.reduce((a, c) => c > a ? c : a, 0) // the actual max value that will have to be adjusted to NORMALIZED_MAX
         let hash = hashHits
             .map(hits => Math.ceil(NORMALIZED_MAX * hits / maxHits)) // normalize values from 0 to NORMALIZED_MAX
             .reduce((a, c) => a = a + c.toString(2).padStart(options.HIT_VALUE_BITS, '0'), '') // convert to binary
             .match(/.{1,4}/g) // split into 4 bit chunks (because will be one hex digit)
             .map(chunk => parseInt(chunk, 2).toString(16)) // convert each 4-bit chunk to single digit of hex
             .join('')
-            .toUpperCase()
+            .toUpperCase() // resulting hexadecimal string
         return hash
     }
+
+    /* Methodology:
+        - Compare two hashes by converting back into binary and subtracting hit values from each other.
+            The percent match is this difference divided by the 'unioned' area under the two histograms.
+            (don't do bitwise XOR cuz 10 vs 01 should be diff of 1, not 0)
+    */    
     static percentMatch(pHashA, pHashB, options) {
         options = { ...TextPHash.DefaultOptions, options }
         if (pHashA.length !== pHashB.length) {

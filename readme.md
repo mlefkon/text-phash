@@ -1,9 +1,7 @@
 # TextPHash
 ### Perceptual Hash for text strings.
-
-Source repository: [Github: mlefkon/text-phash](https://github.com/mlefkon/text-phash)
-
-NPM Package: [NPM: text-phash](https://www.npmjs.com/package/text-phash)
+- Source repository: [Github: mlefkon/text-phash](https://github.com/mlefkon/text-phash)
+- NPM Package: [NPM: text-phash](https://www.npmjs.com/package/text-phash)
 
 ---
 
@@ -29,9 +27,9 @@ NPM Package: [NPM: text-phash](https://www.npmjs.com/package/text-phash)
 1.  Supply text (can be one word or a lengthy book)
 2.  Tokenize text into neighboring groups of words, each group (an n-gram) numbering NGRAM_WORDS long. 
 3.  Initialize `[hashHits]` array with (2 ^ WORD_HASH_BIT_SIZE) zeros, one 'counter' for each possible hash value. 
-4.  Use {WORD_HASH_FUNCTION} to hash each n-gram into {WORD_HASH_BIT_SIZE} bits.
-5.  Increment that hash's 'counter' in the `[hashHits]` array
-6.  Normalize the `[hashHits]` counters to between 0 (no hits) and 2^HIT_VALUE_BITS-1 (max hits).
+4.  Hash each n-gram using {WORD_HASH_FUNCTION}.
+5.  For each hash encountered, increment it's 'counter' in the `[hashHits]` array
+6.  Normalize the `[hashHits]` counters to between 0, for no hits, and max hits (determined by HIT_VALUE_BITS).
 7.  Convert `[hashHits]` array into a hexadecimal string
 8.  Compare two hashes by converting hex back into binary array and comparing the difference in hits.
 
@@ -44,18 +42,19 @@ TextPHash.computePHash(text)
 TextPHash.computePHash(text, options)
 ```
 
-- Returns a hexadecimal number representing a binary string (`2 ^ WORD_HASH_BIT_SIZE` x `2 ^ HIT_VALUE_BITS`) bits long. Defaults to a 64 digit hexadecimal string.
+- Returns a hexadecimal number representing a binary string (`2 ^ WORD_HASH_BIT_SIZE` x `2 ^ HIT_VALUE_BITS`) bits long. Using the default options, this will be a 64 digit hexadecimal string.
 
 ```javascript
 TextPHash.percentMatch(pHashA, pHashB)
 TextPHash.percentMatch(pHashA, pHashB, options)
 ```
 
-- Returns a number between zero and 100.
+- If options are supplied, they must be the same as those used to create the hashes.
+- Returns a number between zero and 100.  
 
 ## Default Options
 
-These are available on the static class object `TextPHash.DefaultOptions`:
+Available on the static class object `TextPHash.DefaultOptions`:
 
 - `NGRAM_WORDS`: default = 2
     
@@ -63,11 +62,11 @@ These are available on the static class object `TextPHash.DefaultOptions`:
 
 - `WORD_HASH_FUNCTION`: default = TextPHash.WordHashDJB
 
-    The Non-Unique hash function done on each word/ngram.  Select any `TextPHash.WordHash...` function in TextPHash class (DJB, FNV1a, Murmur3).  Or provide your own with signature: `(str, bitSize) => numHash` which is a `bitSize` sized hash.
+    The Non-Unique hash function done on each group of words/ngram.  Select any `TextPHash.WordHash...` function in TextPHash class (DJB, FNV1a, Murmur3).  Or provide your own with signature: `(str, bitSize) => numHash` which is a `bitSize` sized hash.
 
 - `WORD_HASH_BIT_SIZE`: default = 6
 
-    The binary size of hash produced by WORD_HASH_FUNCTION, done on each word/ngram. Not meant to be unique, just to build a histogram of melded word frequencies. So if this is '6', there will be 2^6, or 64 possible 'x values' that a word hash could end up being. This is the 'x value' in the hash histogram.
+    The binary size of hash produced by WORD_HASH_FUNCTION. Not meant to be unique, just to build a histogram of melded word frequencies. So if this is '6', there will be 2^6, or 64 possible 'x values' that a word hash could end up being. This is the 'x value' in the hash histogram.
 
 - `HIT_VALUE_BITS`: default = 4
 

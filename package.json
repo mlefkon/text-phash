@@ -1,6 +1,6 @@
 {
   "name": "text-phash",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Compute and compare perceptual hashes for text strings to check similarity.",
   "type": "commonjs",
   "main": "src/TextPHash.js",
