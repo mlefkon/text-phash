@@ -35,4 +35,14 @@
     "url": "https://github.com/mlefkon/text-phash/issues"
   },
   "homepage": "https://github.com/mlefkon/text-phash#readme"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mlefkon/text-phash.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mlefkon/text-phash/issues"
+  },
+  "homepage": "https://github.com/mlefkon/text-phash#readme"
 }
