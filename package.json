@@ -1,7 +1,7 @@
 {
   "name": "text-phash",
-  "version": "1.0.0",
-  "description": "Compute and compare perceptual hashes for text files to check similarity.",
+  "version": "1.0.3",
+  "description": "Compute and compare perceptual hashes for text strings to check similarity.",
   "type": "commonjs",
   "main": "src/TextPHash.js",
   "exports": {
@@ -9,7 +9,6 @@
     "require": "./src/TextPHash.js"
   },
   "scripts": {
-    "test:esm": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test": "clear; jest",
     "publish": "npm publish --access public"
   },
@@ -26,5 +25,14 @@
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.7.0"
-  }
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mlefkon/text-phash.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mlefkon/text-phash/issues"
+  },
+  "homepage": "https://github.com/mlefkon/text-phash#readme"
 }

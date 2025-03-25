@@ -47,7 +47,7 @@ class TextPHash {
         const NORMALIZED_MAX = 2 ** options.HIT_VALUE_BITS - 1  // the max value that we can save is based on how many bits we have available (= 2 ^ bits)
         let maxHits = hashHits.reduce((a, c) => c > a ? c : a, 0)
         let hash = hashHits
-            .map(hits => Math.ceil(NORMALIZED_MAX * hits / maxHits)) // normalize values from 0 to 3
+            .map(hits => Math.ceil(NORMALIZED_MAX * hits / maxHits)) // normalize values from 0 to NORMALIZED_MAX
             .reduce((a, c) => a = a + c.toString(2).padStart(options.HIT_VALUE_BITS, '0'), '') // convert to binary
             .match(/.{1,4}/g) // split into 4 bit chunks (because will be one hex digit)
             .map(chunk => parseInt(chunk, 2).toString(16)) // convert each 4-bit chunk to single digit of hex
