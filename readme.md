@@ -25,13 +25,13 @@
 
 ## Methodology
 1.  Supply text (can be one word or a lengthy book)
-2.  Tokenize text into neighboring groups of words, each group (an n-gram) numbering NGRAM_WORDS long. 
-3.  Initialize `[hashHits]` array with (2 ^ WORD_HASH_BIT_SIZE) zeros, one 'counter' for each possible hash value. 
-4.  Hash each n-gram using {WORD_HASH_FUNCTION}.
+2.  Tokenize text into neighboring groups of words. Each group is NGRAM_WORDS long. 
+3.  Initialize `[hashHits]` array with zeros, one 'counter' for each possible hash value. Array length is determined by WORD_HASH_BIT_SIZE.
+4.  Hash each word-group.
 5.  For each hash encountered, increment it's 'counter' in the `[hashHits]` array
-6.  Normalize the `[hashHits]` counters to between 0, for no hits, and max hits (determined by HIT_VALUE_BITS).
-7.  Convert `[hashHits]` array into a hexadecimal string
-8.  Compare two hashes by converting hex back into binary array and comparing the difference in hits.
+6.  Normalize all `[hashHits]` counters between 0, for no hits, and max hits (determined by HIT_VALUE_BITS).
+7.  Convert `[hashHits]` array into a hexadecimal string.
+8.  Compare two hashes by converting hex back into `[hashHits]` array and comparing the difference in hits.
 
 ## Functions
 

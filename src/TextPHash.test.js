@@ -43,18 +43,32 @@ describe('PHashText', () => {
         expect(hashA).toBeTruthy()
         expect(pctMatch).toBe(0)
     });
+    test("Do text pHash for two identical one word strings where NGRAM_WORDS >= 2. Percent match should be 100%.", async () => {
+        let hashA = TextPHash.computePHash("cat", { NGRAM_WORDS: 3 })
+        let hashB = TextPHash.computePHash("cat", { NGRAM_WORDS: 3 })
+        let pctMatch = TextPHash.percentMatch(hashA, hashB)
+        expect(hashA).toBeTruthy()
+        expect(pctMatch).toBe(100)
+    });
+    test("Do text pHash for two different one word strings where NGRAM_WORDS >= 2. Percent match should be 100%.", async () => {
+        let hashA = TextPHash.computePHash("dog", { NGRAM_WORDS: 3 })
+        let hashB = TextPHash.computePHash("cat", { NGRAM_WORDS: 3 })
+        let pctMatch = TextPHash.percentMatch(hashA, hashB)
+        expect(hashA).toBeTruthy()
+        expect(pctMatch).toBe(0)
+    });
     test("Empty String should result in hash of all '0's using the default DJB Hash.", async () => {
-        let hashA = TextPHash.computePHash("", TextPHash.WordHashDJB)
+        let hashA = TextPHash.computePHash("", { WORD_HASH_FUNCTION: TextPHash.WordHashDJB })
         expect(hashA).toBeTruthy()
         expect(hashA).toMatch(/^0+$/);
     });
     test("Empty String should result in hash of all '0's using FNV1a Hash.", async () => {
-        let hashA = TextPHash.computePHash("", TextPHash.WordHashFNV1a)
+        let hashA = TextPHash.computePHash("", { WORD_HASH_FUNCTION: TextPHash.WordHashFNV1a })
         expect(hashA).toBeTruthy()
         expect(hashA).toMatch(/^0+$/);
     });
     test("Empty String should result in hash of all '0's using Murmur3 Hash.", async () => {
-        let hashA = TextPHash.computePHash("", TextPHash.WordHashMurmur3)
+        let hashA = TextPHash.computePHash("", { WORD_HASH_FUNCTION: TextPHash.WordHashMurmur3 })
         expect(hashA).toBeTruthy()
         expect(hashA).toMatch(/^0+$/);
     });
