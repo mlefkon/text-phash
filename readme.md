@@ -35,7 +35,9 @@
 
 ## Functions
 
-For options, see optional {options} object below.
+For optional `options` parameter {object}, supply one or more possible properties from the 'Default Options' object below.
+
+### computePHash()
 
 ```javascript
 TextPHash.computePHash(text)
@@ -43,6 +45,8 @@ TextPHash.computePHash(text, options)
 ```
 
 - Returns a hexadecimal number representing a binary string (`2 ^ WORD_HASH_BIT_SIZE` x `2 ^ HIT_VALUE_BITS`) bits long. Using the default options, this will be a 64 digit hexadecimal string.
+
+### percentMatch()
 
 ```javascript
 TextPHash.percentMatch(pHashA, pHashB)
