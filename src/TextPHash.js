@@ -2,12 +2,12 @@ class TextPHash {
 
     static DefaultOptions = {   // These are recommended, but can be changed:
         // Binary size of hash for individual words/grams. Not meant to be unique, just to build a histogram of melded word frequencies.
-        WORD_HASH_BIT_SIZE: 6,
+        WORD_HASH_BITS: 6,
         // Binary size of hit counter for a single hash. Actual hits are adjusted to these discrete values. This is the 'y value' in the hash histogram.
         HIT_VALUE_BITS: 4,
         // Number of 'neighbor' words that will be hashed together (1: ABCDE=>[A,B,C,D,E], 2: ABCDE => [AB, BC, CD, DE], 3: ABCDE => [ABC,BCD,CDE])
         NGRAM_WORDS: 2,
-        // Non-Unique hash function for each word/ngram.  Select any 'WordHash...' function in this class or provide own that returns a WORD_HASH_BIT_SIZE size hash.
+        // Non-Unique hash function for each word/ngram.  Select any 'WordHash...' function in this class or provide own that returns a WORD_HASH_BITS size hash.
         WORD_HASH_FUNCTION: TextPHash.WordHashDJB
     }
 
@@ -16,8 +16,8 @@ class TextPHash {
         // Supply text (can be one word or a lengthy book)
         options = { ...TextPHash.DefaultOptions, options }
         // Initialize [hashHits] array with zeros, one element for each possible word-hash value. 
-        //   eg. 8 bit hash yields 256 possible values (2 ** WORD_HASH_BIT_SIZE).
-        let hashHits = new Array(2 ** options.WORD_HASH_BIT_SIZE).fill(0);
+        //   eg. 8 bit hash yields 256 possible values (2 ** WORD_HASH_BITS).
+        let hashHits = new Array(2 ** options.WORD_HASH_BITS).fill(0);
 
         if (text === null)
             throw new Error('Text is null')
@@ -29,8 +29,8 @@ class TextPHash {
         if (words !== null && words.length > 0) { // don't do for blank document or contain only non-word items, like images.
             let grams = TextPHash.#nGrams(words, options.NGRAM_WORDS)
             grams.forEach(gram => {
-                // hash each n-gram into {WORD_HASH_BIT_SIZE} bits
-                let wordHash = options.WORD_HASH_FUNCTION(gram, options.WORD_HASH_BIT_SIZE); 
+                // hash each n-gram into {WORD_HASH_BITS} bits
+                let wordHash = options.WORD_HASH_FUNCTION(gram, options.WORD_HASH_BITS); 
                 // and register a 'hit' in [hashHits] for each hash encountered
                 hashHits[wordHash]++ 
             });
@@ -88,8 +88,8 @@ class TextPHash {
     }
     static #hitArray(pHash, options) {
         let sBin = pHash.split('').reduce((a, c) => a + Number.parseInt(c, 16).toString(2).padStart(4, '0'), '') // convert each hex digit (which is 4-bits) to binary string
-        let aHits = new Array(2 ** options.WORD_HASH_BIT_SIZE).fill(0);
-        for (let i = 0; i < (2 ** options.WORD_HASH_BIT_SIZE); i++) {
+        let aHits = new Array(2 ** options.WORD_HASH_BITS).fill(0);
+        for (let i = 0; i < (2 ** options.WORD_HASH_BITS); i++) {
             let sHits = sBin.slice(i * options.HIT_VALUE_BITS, (i + 1) * options.HIT_VALUE_BITS)
             aHits[i] = parseInt(sHits, 2)
         }
